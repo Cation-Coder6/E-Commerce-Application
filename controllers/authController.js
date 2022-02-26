@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { attachCookiesToResponse } = require("../utils");
+const { attachCookiesToResponse, createTokenUser } = require("../utils");
 
 const register = async (req, res) => {
   const { email, password, name } = req.body;
@@ -20,7 +20,7 @@ const register = async (req, res) => {
   const user = await User.create({ name, password, email, role });
 
   //creating the jwt token
-  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const tokenUser = createTokenUser(user);
   attachCookiesToResponse({ res, user: tokenUser });
 
   res.status(StatusCodes.CREATED).json({ user: tokenUser });
@@ -43,7 +43,7 @@ const login = async (req, res) => {
     throw new CustomError.UnauthenticatedError("Wrong Password Entered");
 
   //if we get the user with the given email and password then assign the token to cookies
-  const token = { name: user.name, userId: user._id, role: user.role };
+  const token = createTokenUser(user);
   attachCookiesToResponse({ res, user: token });
 
   //after assigning cookies display the payload
