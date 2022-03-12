@@ -12,7 +12,7 @@ const app = express();
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+const fileUpload = require("express-fileupload");
 //port
 const port = process.env.PORT || 5000;
 
@@ -31,6 +31,10 @@ app.use(express.json());
 
 //using the cookie parser
 app.use(cookieParser(process.env.JWT_SECRET));
+
+//using file upload for uploading images
+app.use(express.static("./public"));
+app.use(fileUpload());
 
 //using the front end
 app.use(express.static("./public"));
