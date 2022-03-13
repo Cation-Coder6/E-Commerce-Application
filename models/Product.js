@@ -63,7 +63,16 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+//this is a virtual property and can be edited as required
+ProductSchema.virtual("reviews", {
+  ref: "Review",
+  localField: "_id",
+  foreignField: "product",
+  justOne: false,
+  match: { rating: 5 }, //to match only those reviews where rating is equal to 5
+});
 
 module.exports = mongoose.model("Product", ProductSchema);

@@ -4,6 +4,7 @@ const CustomError = require("../errors");
 const path = require("path");
 
 //create a product belonging to a user
+
 const createProduct = async (req, res) => {
   req.body.user = req.user.userId;
   const product = await Product.create(req.body);
@@ -11,15 +12,17 @@ const createProduct = async (req, res) => {
 };
 
 //get all products from a user
+
 const getAllProducts = async (req, res) => {
   const products = await Product.find({});
   res.status(StatusCodes.OK).json({ products, count: products.length });
 };
 
 //get a single product using id
+
 const getSingleProduct = async (req, res) => {
   const { id: productId } = req.params;
-  const product = await Product.findOne({ _id: productId });
+  const product = await Product.findOne({ _id: productId }).populate("reviews");
   if (!product) {
     throw new CustomError.NotFoundError(`No Product with id : ${productId}`);
   }
@@ -27,6 +30,7 @@ const getSingleProduct = async (req, res) => {
 };
 
 //update a single product with a given id
+
 const updateProduct = async (req, res) => {
   const { id: productId } = req.params;
   const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
@@ -40,6 +44,7 @@ const updateProduct = async (req, res) => {
 };
 
 //delete a product with a given id
+
 const deleteProduct = async (req, res) => {
   const { id: productId } = req.params;
   const product = await Product.findOne({ _id: productId });
