@@ -57,6 +57,10 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    numberOfReviews: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -72,7 +76,13 @@ ProductSchema.virtual("reviews", {
   localField: "_id",
   foreignField: "product",
   justOne: false,
-  match: { rating: 5 }, //to match only those reviews where rating is equal to 5
+  // match: { rating: 5 }, //to match only those reviews where rating is equal to 5
+});
+
+//deletes all the reviews of a product once a product gets deleted
+
+ProductSchema.pre("remove", async function (next) {
+  await this.model("Review").deleteMany({ product: this._id });
 });
 
 module.exports = mongoose.model("Product", ProductSchema);
