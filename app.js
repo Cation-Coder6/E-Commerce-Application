@@ -11,7 +11,6 @@ const app = express();
 //rest of the pakages
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const rateLimiter = require("express-rate-limit");
 const helmet = require("helmet");
@@ -42,9 +41,6 @@ app.use(cors());
 app.use(xss());
 app.use(mongoSanitize());
 
-//using morgan
-app.use(morgan("tiny"));
-
 //json middleware
 app.use(express.json());
 
@@ -67,16 +63,6 @@ const userRouter = require("./routes/userRoutes");
 const productRouter = require("./routes/productRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const orderRouter = require("./routes/orderRoutes");
-
-app.get("/", (req, res) => {
-  res.send("Get route works");
-});
-
-app.get("/api/v1", (req, res) => {
-  // console.log(req.cookies);
-  console.log(req.signedCookies); //required once we set the signed property of cookies to true
-  res.send("Get route works");
-});
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
